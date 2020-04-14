@@ -24,3 +24,7 @@ listProcesses = do
     -- TODO: Find a replacement for these functions
     isInt = all isDigit
     isDigit c = c `elem` "0123456789"
+
+main = do
+  entries <- listProcesses
+  mapM_ print entries
