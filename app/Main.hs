@@ -3,6 +3,7 @@ import System.Posix.Files
 import System.IO
 import System.Directory
 import Control.Monad
+import Data.List
 
 
 data ProcessEntry = ProcessEntry { id :: ProcessID
@@ -25,6 +26,13 @@ listProcesses = do
     isInt = all isDigit
     isDigit c = c `elem` "0123456789"
 
+
+renderProcessTable :: [ProcessEntry] -> String
+renderProcessTable entries = tableHeader ++ "\n" ++ intercalate "\n" (map renderRow entries)
+  where
+    tableHeader = "PID user"
+    renderRow entry = show (Main.id entry) ++ " " ++ show (user entry)
+
 main = do
   entries <- listProcesses
-  mapM_ print entries
+  putStrLn (renderProcessTable entries)
