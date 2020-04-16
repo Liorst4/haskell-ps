@@ -8,6 +8,8 @@ import Data.Word
 import Data.Maybe
 
 
+type ProcessAddress = Word
+
 -- TODO: Support older kernels
 data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , comm :: String
@@ -34,16 +36,16 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , vsize :: Word
                                          , rss :: Int
                                          , rsslim :: Word
-                                         , startcode :: Word -- TODO: Address
-                                         , endcode :: Word -- TODO: Address
-                                         , startstack :: Word -- TODO: Address
-                                         , kstkesp :: Word -- TODO: Address
-                                         , kstkeip :: Word -- TODO: Address
+                                         , startcode :: ProcessAddress
+                                         , endcode :: ProcessAddress
+                                         , startstack :: ProcessAddress
+                                         , kstkesp :: ProcessAddress
+                                         , kstkeip :: ProcessAddress
                                          , signal :: Word
                                          , blocked :: Word
                                          , sigignore :: Word
                                          , sigcatch :: Word
-                                         , wchan :: Word -- TODO: Address
+                                         , wchan :: ProcessAddress
                                          , nswap :: Word
                                          , cnswap :: Word
                                          , exit_signal :: Int
@@ -53,13 +55,13 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , delayacct_blkio_ticks :: Word
                                          , guest_time :: Word
                                          , cguest_time :: Int
-                                         , start_data :: Word -- TODO: Address
-                                         , end_data :: Word -- TODO: Address
-                                         , start_brk :: Word -- TODO: Address
-                                         , arg_start :: Word -- TODO: Address
-                                         , arg_end :: Word -- TODO: Address
-                                         , env_start :: Word -- TODO: Address
-                                         , env_end :: Word -- TODO: Address
+                                         , start_data :: ProcessAddress
+                                         , end_data :: ProcessAddress
+                                         , start_brk :: ProcessAddress
+                                         , arg_start :: ProcessAddress
+                                         , arg_end :: ProcessAddress
+                                         , env_start :: ProcessAddress
+                                         , env_end :: ProcessAddress
                                          , exit_code :: Int }
   deriving (Show)
 
