@@ -40,7 +40,7 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , nice :: Int
                                          , num_threads :: Int
                                          , itrealvalue :: Int
-                                         , startime :: Word
+                                         , starttime :: Word
                                          , vsize :: Word
                                          , rss :: Int
                                          , rsslim :: Word
@@ -93,7 +93,7 @@ parseProcessState c =
 -- TODO: There must be a better way to do that
 -- TODO: Use scanf or megaparsec
 parseStatFileContent :: String -> Maybe LinuxProcessStat
-parseStatFileContent statFileContent = Just (LinuxProcessStat pid_ comm_ state_ ppid_ pgrp_ session_ tty_nr_ tpgid_ flags_ minflt_ cmiflt_ majflt_ cmajflt_ utime_ stime_ cutime_ cstime_ proiority_ nice_ num_threads_ itrealvalue_ startime_ vsize_ rss_ rsslim_ startcode_ endcode_ startstack_ kstkesp_ kstkeip_ signal_ blocked_ sigignore_ sigcatch_ wchan_ nswap_ cnswap_ exit_signal_ processor_ rt_priority_ policy_ delayacct_blkio_ticks_ guest_time_ cguest_time_ start_data_ end_data_ start_brk_ arg_start_ arg_end_ env_start_ env_end_ exit_code_)
+parseStatFileContent statFileContent = Just (LinuxProcessStat pid_ comm_ state_ ppid_ pgrp_ session_ tty_nr_ tpgid_ flags_ minflt_ cmiflt_ majflt_ cmajflt_ utime_ stime_ cutime_ cstime_ proiority_ nice_ num_threads_ itrealvalue_ starttime_ vsize_ rss_ rsslim_ startcode_ endcode_ startstack_ kstkesp_ kstkeip_ signal_ blocked_ sigignore_ sigcatch_ wchan_ nswap_ cnswap_ exit_signal_ processor_ rt_priority_ policy_ delayacct_blkio_ticks_ guest_time_ cguest_time_ start_data_ end_data_ start_brk_ arg_start_ arg_end_ env_start_ env_end_ exit_code_)
   where
     items = words statFileContent
     readItem i = read (items !! i)
@@ -118,7 +118,7 @@ parseStatFileContent statFileContent = Just (LinuxProcessStat pid_ comm_ state_ 
     nice_ = readItem 18
     num_threads_ = readItem 19
     itrealvalue_ = readItem 20
-    startime_ = readItem 21
+    starttime_ = readItem 21
     vsize_ = readItem 22
     rss_ = readItem 23
     rsslim_ = readItem 24
