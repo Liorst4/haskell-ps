@@ -7,13 +7,21 @@ import Data.List
 import Data.Word
 import Data.Maybe
 
+data LinuxProcessState = Running
+                       | SleepingInAnInterruptableWait
+                       | WaitingInUninterruptableDiskSleep
+                       | Zombie
+                       | Stopped
+                       | TracingStop
+                       | Dead
+                       deriving (Show)
 
 type ProcessAddress = Word
 
 -- TODO: Support older kernels
 data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , comm :: String
-                                         , state :: Char -- TODO: Enum
+                                         , state :: LinuxProcessState
                                          , ppid :: ProcessID
                                          , pgrp :: ProcessGroupID
                                          , session :: Int
@@ -69,6 +77,19 @@ data ProcessEntry = ProcessEntry { user :: UserID
                                  , stat :: LinuxProcessStat }
   deriving (Show)
 
+-- TODO: Support older kernels
+parseProcessState :: Char -> Maybe LinuxProcessState
+parseProcessState c =
+  case c of
+    'R' -> Just Running
+    'S' -> Just SleepingInAnInterruptableWait
+    'D' -> Just WaitingInUninterruptableDiskSleep
+    'Z' -> Just Zombie
+    'T' -> Just Stopped
+    't' -> Just TracingStop
+    'X' -> Just Dead
+    _ -> Nothing
+
 -- TODO: There must be a better way to do that
 -- TODO: Use scanf or megaparsec
 parseStatFileContent :: String -> Maybe LinuxProcessStat
@@ -78,7 +99,7 @@ parseStatFileContent statFileContent = Just (LinuxProcessStat pid_ comm_ state_ 
     readItem i = read (items !! i)
     pid_ = readItem 0
     comm_ = init $ drop 1 (items !! 1)
-    state_ = head (items !! 2)
+    state_ = fromJust (parseProcessState (head (items !! 2))) -- TODO: Support failure
     ppid_ = readItem 3
     pgrp_ = readItem 4
     session_ = readItem 5
