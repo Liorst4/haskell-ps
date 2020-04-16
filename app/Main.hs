@@ -9,11 +9,11 @@ import Data.Maybe
 
 
 -- TODO: Support older kernels
-data LinuxProcessStat = LinuxProcessStat { pid :: Int -- TODO: ProcessID
+data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , comm :: String
                                          , state :: Char -- TODO: Enum
-                                         , ppid :: Int -- TODO: ProcessID
-                                         , pgrp :: Int -- TODO: GroupProcessID
+                                         , ppid :: ProcessID
+                                         , pgrp :: ProcessGroupID
                                          , session :: Int
                                          , tty_nr :: Int
                                          , tpgid :: Int
