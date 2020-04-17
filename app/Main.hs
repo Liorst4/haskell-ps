@@ -26,7 +26,7 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , pgrp :: ProcessGroupID
                                          , session :: Int
                                          , tty_nr :: Int
-                                         , tpgid :: Int
+                                         , tpgid :: ProcessID
                                          , flags :: Word
                                          , minflt :: Word
                                          , cmiflt :: Word
