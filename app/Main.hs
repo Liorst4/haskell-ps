@@ -6,6 +6,7 @@ import Control.Monad
 import Data.List
 import Data.Word
 import Data.Maybe
+import Data.Bits
 
 data LinuxProcessState = Running
                        | SleepingInAnInterruptableWait
@@ -15,6 +16,38 @@ data LinuxProcessState = Running
                        | TracingStop
                        | Dead
                        deriving (Show)
+
+data LinuxProcessFlags = LinuxProcessFlags { idle :: Bool
+                                           , exiting :: Bool
+                                           , vcpu :: Bool
+                                           , wq_worker :: Bool
+                                           , forknoexec :: Bool
+                                           , mce_process :: Bool
+                                           , superpriv :: Bool
+                                           , dumpcore :: Bool
+                                           , signaled :: Bool
+                                           , memalloc :: Bool
+                                           , nproc_exceeded :: Bool
+                                           , used_math :: Bool
+                                           , used_async :: Bool
+                                           , nofreeze :: Bool
+                                           , frozen :: Bool
+                                           , kswapd :: Bool
+                                           , memalloc_nofs :: Bool
+                                           , memalloc_noio :: Bool
+                                           , less_throttle :: Bool
+                                           , kthread :: Bool
+                                           , randomize :: Bool
+                                           , swapwrite :: Bool
+                                           , memstall :: Bool
+                                           , umh :: Bool
+                                           , no_setaffinity :: Bool
+                                           , mce_early :: Bool
+                                           , memalloc_nocma :: Bool
+                                           , io_worker :: Bool
+                                           , freezer_skip :: Bool
+                                           , suspend_task :: Bool }
+  deriving (Show)
 
 type ProcessAddress = Word
 
@@ -27,7 +60,7 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , session :: Int
                                          , tty_nr :: Int
                                          , tpgid :: ProcessID
-                                         , flags :: Word
+                                         , flags :: LinuxProcessFlags
                                          , minflt :: Word
                                          , cmiflt :: Word
                                          , majflt :: Word
@@ -90,6 +123,40 @@ parseProcessState c =
     'X' -> Just Dead
     _ -> Nothing
 
+parseLinuxProcessFlags :: Word -> LinuxProcessFlags
+parseLinuxProcessFlags n = LinuxProcessFlags { idle = bitAt 1
+                                             , exiting = bitAt 3
+                                             , vcpu = bitAt 4
+                                             , wq_worker = bitAt 5
+                                             , forknoexec = bitAt 6
+                                             , mce_process = bitAt 7
+                                             , superpriv = bitAt 8
+                                             , dumpcore = bitAt 9
+                                             , signaled = bitAt 10
+                                             , memalloc = bitAt 11
+                                             , nproc_exceeded = bitAt 12
+                                             , used_math = bitAt 13
+                                             , used_async = bitAt 14
+                                             , nofreeze = bitAt 15
+                                             , frozen = bitAt 16
+                                             , kswapd = bitAt 17
+                                             , memalloc_nofs = bitAt 18
+                                             , memalloc_noio = bitAt 19
+                                             , less_throttle = bitAt 20
+                                             , kthread = bitAt 21
+                                             , randomize = bitAt 22
+                                             , swapwrite = bitAt 23
+                                             , memstall = bitAt 24
+                                             , umh = bitAt 25
+                                             , no_setaffinity = bitAt 26
+                                             , mce_early = bitAt 27
+                                             , memalloc_nocma = bitAt 28
+                                             , io_worker = bitAt 29
+                                             , freezer_skip = bitAt 30
+                                             , suspend_task = bitAt 31 }
+  where
+    bitAt i = 0 /= (n .&. (1 `shiftL` i))
+
 -- TODO: There must be a better way to do that
 -- TODO: Use scanf or megaparsec
 parseStatFileContent :: String -> Maybe LinuxProcessStat
@@ -101,7 +168,7 @@ parseStatFileContent statFileContent = Just LinuxProcessStat { pid = readItem 0
                                                              , session = readItem 5
                                                              , tty_nr = readItem 6
                                                              , tpgid = readItem 7
-                                                             , flags = readItem 8
+                                                             , flags = parseLinuxProcessFlags (readItem 8)
                                                              , minflt = readItem 9
                                                              , cmiflt = readItem 10
                                                              , majflt = readItem 11
