@@ -17,6 +17,7 @@ data LinuxProcessState = Running
                        | Dead
                        deriving (Show)
 
+-- TODO: CamelCase
 data LinuxProcessFlags = LinuxProcessFlags { idle :: Bool
                                            , exiting :: Bool
                                            , vcpu :: Bool
@@ -49,9 +50,11 @@ data LinuxProcessFlags = LinuxProcessFlags { idle :: Bool
                                            , suspend_task :: Bool }
   deriving (Show)
 
+-- TODO: Print as hex
 type ProcessAddress = Word
 
 -- TODO: Support older kernels
+-- TODO: CamelCase
 data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , comm :: String
                                          , state :: LinuxProcessState
@@ -65,15 +68,15 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , cmiflt :: Word
                                          , majflt :: Word
                                          , cmajflt :: Word
-                                         , utime :: Word
-                                         , stime :: Word
-                                         , cutime :: Int
-                                         , cstime :: Int
+                                         , utime :: Word -- TODO: parse
+                                         , stime :: Word -- TODO: parse
+                                         , cutime :: Int -- TODO: parse
+                                         , cstime :: Int -- TODO: parse
                                          , proiority :: Int
                                          , nice :: Int
                                          , num_threads :: Int
                                          , itrealvalue :: Int
-                                         , starttime :: Word
+                                         , starttime :: Word -- TODO: parse
                                          , vsize :: Word
                                          , rss :: Int
                                          , rsslim :: Word
@@ -82,20 +85,20 @@ data LinuxProcessStat = LinuxProcessStat { pid :: ProcessID
                                          , startstack :: ProcessAddress
                                          , kstkesp :: ProcessAddress
                                          , kstkeip :: ProcessAddress
-                                         , signal :: Word
-                                         , blocked :: Word
-                                         , sigignore :: Word
-                                         , sigcatch :: Word
+                                         , signal :: Word -- TODO: parse
+                                         , blocked :: Word -- TODO: parse
+                                         , sigignore :: Word -- TODO: parse
+                                         , sigcatch :: Word -- TODO: parse
                                          , wchan :: ProcessAddress
                                          , nswap :: Word
                                          , cnswap :: Word
                                          , exit_signal :: Int
                                          , processor :: Int
                                          , rt_priority :: Word
-                                         , policy :: Word
-                                         , delayacct_blkio_ticks :: Word
-                                         , guest_time :: Word
-                                         , cguest_time :: Int
+                                         , policy :: Word -- TODO: parse
+                                         , delayacct_blkio_ticks :: Word -- TODO: parse
+                                         , guest_time :: Word -- TODO: parse
+                                         , cguest_time :: Int -- TODO: parse
                                          , start_data :: ProcessAddress
                                          , end_data :: ProcessAddress
                                          , start_brk :: ProcessAddress
@@ -248,6 +251,8 @@ listProcesses = do
   stats <- statFiles
   someEntries <- mapM parseStatFile stats
   return (catMaybes someEntries)
+
+-- TODO: Username from UID
 
 renderProcessTable :: [ProcessEntry] -> String
 renderProcessTable entries = tableHeader ++ "\n" ++ intercalate "\n" (map renderRow entries)
