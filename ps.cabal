@@ -18,7 +18,7 @@ extra-source-files:  CHANGELOG.md
 
 executable ps
   main-is:             Main.hs
-  -- other-modules:
+  other-modules:       LinuxProcess
   -- other-extensions:
   build-depends:       base >=4.13 && <4.14
                        , unix >= 2.7.2.2
